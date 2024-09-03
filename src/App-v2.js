@@ -10,15 +10,10 @@ const average = (arr) =>
 export default function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null)
-
-  //  const [watched, setWatched] = useState([]);
-  const [watched, setWatched] = useState(function () {
-    const storedValue = localStorage.getItem('watched')
-    return JSON.parse(storedValue);
-  });
 
   function handleSelectMovie(id) {
     setSelectedId(selectedId => id === selectedId ? null : id)
@@ -28,18 +23,15 @@ export default function App() {
   }
   function handleAddWatched(movie) {
     setWatched(watched => [...watched, movie])
-
   }
 
   function handleDeleteWatched(id) {
     setWatched(watched => watched.filter(movie => movie.imdbID !== id));
   }
 
-  useEffect(function () {
-    localStorage.setItem('watched', JSON.stringify(watched))
-  }, [watched])
-  useEffect(
 
+
+  useEffect(
     function () {
       const controller = new AbortController();
       async function fetchMovies() {
@@ -254,7 +246,6 @@ function SelectedMovie({ selectedId, onCloseMovie, onAddWatched, watched }) {
     Director: director,
     Genre: genre
   } = movie;
-
   function handleAdd() {
     const newWatchedMovie = {
       imdbID: selectedId,
@@ -267,8 +258,6 @@ function SelectedMovie({ selectedId, onCloseMovie, onAddWatched, watched }) {
     }
     onAddWatched(newWatchedMovie)
     onCloseMovie()
-    // setAvgRating(Number(imdbRating));
-    // setAvgRating(avgRating => (avgRating + userRating) / 2)
   }
   useEffect(function () {
     function callback(e) {
@@ -319,7 +308,6 @@ function SelectedMovie({ selectedId, onCloseMovie, onAddWatched, watched }) {
               <p><span>⭐</span>{imdbRating} Rating</p>
             </div>
           </header>
-          {/* <p>{avgRating}</p> */}
           <section>
             <div className="rating">
               {!isWatched ?
@@ -356,7 +344,7 @@ function WatchedSummary({ watched }) {
   const runTimeInHours = (runtime / 60)
   return (
     <div className="summary">
-      <h2>Peliculas que viste</h2>
+      <h2>Movies you watched</h2>
       <div>
         <p>
           <span>#️⃣</span>
